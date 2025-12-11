@@ -26,7 +26,7 @@ F = cholesky(gridlaplacian(d,d) + 0.1I)
 
 z_vector = randn(d*d)
 data_observable = Observable(zeros(d, d))
-
+current_field = zeros(d, d)
 fig = Figure(size = (1000, 800), backgroundcolor = :black)
 
 ax = Axis3(fig[1, 1], 
@@ -47,14 +47,14 @@ wireframe!(ax, 1:d, 1:d, data_observable;
 display(fig)
 
 # 4. Simulation Parameters
-α = 0.99              
+α = 0.8             
 β = sqrt(1 - α^2)      
 t = 0.0                
 speed = 0.05           
 freq = 0.075           
 amp_wave = 1.75       
 amp_noise = 0.5   
-
+temporal_smoothness = 0.1
 x_grid = repeat(1:d, 1, d) 
 
 # 5. Loop
@@ -62,14 +62,15 @@ x_grid = repeat(1:d, 1, d)
     while isopen(fig.scene)
         global z_vector = α .* z_vector .+ β .* randn(d*d)
         
-        noise_field = reshape(F \ z_vector, d, d)
+        target_noise_field = reshape(F \ z_vector, d, d)
 
         global t += speed
         rolling_wave = @. amp_wave * sin(freq * x_grid - t)
+        target_state = rolling_wave .+ (amp_noise .* target_noise_field)
+        current_field .= (1 - temporal_smoothness) .* current_field .+ temporal_smoothness .* target_state
 
-        # Updated math: mixing rolling wave with noise
-        data_observable[] = 0.1 .* (rolling_wave .+ (amp_noise .* noise_field))
+        data_observable[] = 0.15 .* current_field
 
-        sleep(1/30) # Slightly slower sleep for smoother mesh rendering
+        sleep(1/60) 
     end
 end
