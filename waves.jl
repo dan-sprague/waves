@@ -30,7 +30,7 @@ current_field = zeros(d, d)
 fig = Figure(size = (1000, 800), backgroundcolor = :black)
 
 ax = Axis3(fig[1, 1], 
-    aspect = (1, 1, 0.4), # Increased z-aspect slightly so waves are more visible
+    aspect = (1, 1, 0.4), 
     azimuth = 1.2,
     elevation = 0.4,
     backgroundcolor = :black
@@ -39,14 +39,13 @@ hidedecorations!(ax)
 hidespines!(ax)
 
 wireframe!(ax, 1:d, 1:d, data_observable; 
-    linewidth = 0.1,       # Keep lines thin for dense 200x200 grids
-    color = :grey,         # High contrast against black background
-    transparency = true    # Helps with visual density
+    linewidth = 0.1,      
+    color = :grey,         
+    transparency = true    
 )
 
 display(fig)
 
-# 4. Simulation Parameters
 α = 0.8             
 β = sqrt(1 - α^2)      
 t = 0.0                
