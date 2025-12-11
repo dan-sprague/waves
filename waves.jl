@@ -56,7 +56,6 @@ amp_noise = 0.5
 temporal_smoothness = 0.1
 x_grid = repeat(1:d, 1, d) 
 
-# 5. Loop
 @async begin
     while isopen(fig.scene)
         global z_vector = α .* z_vector .+ β .* randn(d*d)
